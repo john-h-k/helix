@@ -37,19 +37,42 @@ If a register is selected before invoking a change or delete command, the select
 - `"hc` - Store the selection in register `h` and then change it (delete and enter insert mode).
 - `"md` - Store the selection in register `m` and delete it.
 
-### Special registers
+### Default registers
+
+Commands that use registers, like yank (`y`), use a default register if none is specified.
+These registers are used as defaults:
 
 | Register character | Contains              |
 | ---                | ---                   |
 | `/`                | Last search           |
 | `:`                | Last executed command |
 | `"`                | Last yanked text      |
-| `_`                | Black hole            |
+| `@`                | Last recorded macro   |
 
-The system clipboard is not directly supported by a special register. Instead, special commands and keybindings are provided. Refer to the
-[key map](keymap.md#space-mode) for more details.
+### Special registers
 
-The black hole register is a no-op register, meaning that no data will be read or written to it.
+Some registers have special behavior when read. These registers discard any values written to them.
+
+| Register character | Contains              |
+| ---                | ---                   |
+| `_`                | Nothing: values written to the register are discarded and no values can be read |
+| `#`                | Selection indices (first selection is `1`, second is `2`, etc.) |
+| `.`                | Contents of the current selections |
+| `%`                | Name of the current file |
+
+### Clipboard registers
+
+The system and primary clipboards are available as registers.
+
+Yanking multiple selections joins the selection contents with newlines. Pasting
+from these registers will paste multiple selections if the clipboard was last
+yanked to by the Helix session. Otherwise the clipboard contents are pasted as
+one selection.
+
+| Register character | Contains          |
+| ---                | ---               |
+| `*`                | System clipboard  |
+| `+`                | Primary clipboard |
 
 ## Surround
 
