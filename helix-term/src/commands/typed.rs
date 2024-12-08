@@ -235,8 +235,16 @@ fn force_buffer_close(
     buffer_close_by_ids_impl(cx, &document_ids, true)
 }
 
-fn buffer_gather_others_impl(editor: &mut Editor, skip_visible: bool) -> Vec<DocumentId> {
-    if skip_visible {
+enum OtherBuffers {
+    All,
+    Left,
+    Right,
+}
+
+fn buffer_gather_others_impl(editor: &mut Editor, skip_visible: bool, sel: OtherBuffers) -> Vec<DocumentId> {
+    let current_document = &doc!(editor).id();
+
+    let ids = if skip_visible {
         let visible_document_ids = editor
             .tree
             .views()
@@ -248,13 +256,77 @@ fn buffer_gather_others_impl(editor: &mut Editor, skip_visible: bool) -> Vec<Doc
             .filter(|doc_id| !visible_document_ids.contains(doc_id))
             .collect()
     } else {
-        let current_document = &doc!(editor).id();
         editor
             .documents()
             .map(|doc| doc.id())
-            .filter(|doc_id| doc_id != current_document)
+            .collect()
+    };
+
+
+    match sel {
+        OtherBuffers::All => ids,
+        OtherBuffers::Left => ids
+            .into_iter()
+            .take_while(|doc_id| doc_id != current_document)
+            .collect(),
+        OtherBuffers::Right => ids
+            .into_iter()
+            .skip_while(|doc_id| doc_id != current_document)
+            .skip(1)
             .collect()
     }
+}
+
+fn buffer_close_right(
+    cx: &mut compositor::Context,
+    args: Args,
+    event: PromptEvent,
+) -> anyhow::Result<()> {
+    if event != PromptEvent::Validate {
+        return Ok(());
+    }
+
+    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"), OtherBuffers::Right);
+    buffer_close_by_ids_impl(cx, &document_ids, false)
+}
+
+fn force_buffer_close_right(
+    cx: &mut compositor::Context,
+    args: Args,
+    event: PromptEvent,
+) -> anyhow::Result<()> {
+    if event != PromptEvent::Validate {
+        return Ok(());
+    }
+
+    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"), OtherBuffers::Right);
+    buffer_close_by_ids_impl(cx, &document_ids, true)
+}
+
+fn buffer_close_left(
+    cx: &mut compositor::Context,
+    args: Args,
+    event: PromptEvent,
+) -> anyhow::Result<()> {
+    if event != PromptEvent::Validate {
+        return Ok(());
+    }
+
+    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"), OtherBuffers::Left);
+    buffer_close_by_ids_impl(cx, &document_ids, false)
+}
+
+fn force_buffer_close_left(
+    cx: &mut compositor::Context,
+    args: Args,
+    event: PromptEvent,
+) -> anyhow::Result<()> {
+    if event != PromptEvent::Validate {
+        return Ok(());
+    }
+
+    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"), OtherBuffers::Left);
+    buffer_close_by_ids_impl(cx, &document_ids, true)
 }
 
 fn buffer_close_others(
@@ -266,7 +338,7 @@ fn buffer_close_others(
         return Ok(());
     }
 
-    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"));
+    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"), OtherBuffers::All);
     buffer_close_by_ids_impl(cx, &document_ids, false)
 }
 
@@ -279,7 +351,7 @@ fn force_buffer_close_others(
         return Ok(());
     }
 
-    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"));
+    let document_ids = buffer_gather_others_impl(cx.editor, args.has_flag("skip-visible"), OtherBuffers::All);
     buffer_close_by_ids_impl(cx, &document_ids, true)
 }
 
@@ -2746,6 +2818,38 @@ pub const TYPABLE_COMMAND_LIST: &[TypableCommand] = &[
         aliases: &["bco!", "bcloseother!"],
         doc: "Force close all buffers but the currently focused one.",
         fun: force_buffer_close_others,
+        completer: CommandCompleter::none(),
+        signature: BUFFER_CLOSE_OTHERS_SIGNATURE,
+    },
+    TypableCommand {
+        name: "buffer-close-left",
+        aliases: &["bcl", "bcloseleft"],
+        doc: "Close all buffers to the left of the currently focused one.",
+        fun: buffer_close_left,
+        completer: CommandCompleter::none(),
+        signature: BUFFER_CLOSE_OTHERS_SIGNATURE,
+    },
+    TypableCommand {
+        name: "buffer-close-left!",
+        aliases: &["bcl!", "bcloseleft!"],
+        doc: "Force close all buffers to the left of the currently focused one.",
+        fun: force_buffer_close_left,
+        completer: CommandCompleter::none(),
+        signature: BUFFER_CLOSE_OTHERS_SIGNATURE,
+    },
+    TypableCommand {
+        name: "buffer-close-right",
+        aliases: &["bcr", "bcloseright"],
+        doc: "Close all buffers to the right of the currently focused one.",
+        fun: buffer_close_right,
+        completer: CommandCompleter::none(),
+        signature: BUFFER_CLOSE_OTHERS_SIGNATURE,
+    },
+    TypableCommand {
+        name: "buffer-close-right!",
+        aliases: &["bcr!", "bcloseright!"],
+        doc: "Force close all buffers to the right of the currently focused one.",
+        fun: force_buffer_close_right,
         completer: CommandCompleter::none(),
         signature: BUFFER_CLOSE_OTHERS_SIGNATURE,
     },
