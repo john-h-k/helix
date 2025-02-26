@@ -1,0 +1,2 @@
+- [db5c5144](/../../commit/db5c5144) MattCheely: Configurable labels for custom menus and typable commands
+- [8493a7ec](/../../commit/8493a7ec) Add `buffer-close-left`, `buffer-close-right`, and `force` versions
