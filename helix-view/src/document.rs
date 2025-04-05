@@ -820,6 +820,24 @@ impl Document {
                 ))
             })
         {
+            // Replace all occurrences of '%FILENAME' in an arg with the file name
+            // remove those arguments if there is no filename
+            let fmt_args = fmt_args.clone();
+            let fmt_args = fmt_args
+                .into_iter()
+                .filter_map(|arg| {
+                    if arg.contains("%FILENAME") {
+                        self.path
+                            .as_ref()
+                            .and_then(|path| path.file_name())
+                            .and_then(|file_name| file_name.to_str())
+                            .map(|file_name| arg.replace("%FILENAME", file_name))
+                    } else {
+                        Some(arg)
+                    }
+                })
+                .collect::<Vec<_>>();
+
             log::debug!(
                 "formatting '{}' with command '{}', args {fmt_args:?}",
                 self.display_name(),
