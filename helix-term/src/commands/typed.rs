@@ -255,7 +255,7 @@ fn buffer_gather_others_impl(editor: &mut Editor, sel: OtherBuffers) -> Vec<Docu
 
 fn buffer_close_right(
     cx: &mut compositor::Context,
-    _args: &[Cow<str>],
+    _args: Args,
     event: PromptEvent,
 ) -> anyhow::Result<()> {
     if event != PromptEvent::Validate {
@@ -268,7 +268,7 @@ fn buffer_close_right(
 
 fn force_buffer_close_right(
     cx: &mut compositor::Context,
-    _args: &[Cow<str>],
+    _args: Args,
     event: PromptEvent,
 ) -> anyhow::Result<()> {
     if event != PromptEvent::Validate {
@@ -281,7 +281,7 @@ fn force_buffer_close_right(
 
 fn buffer_close_left(
     cx: &mut compositor::Context,
-    _args: &[Cow<str>],
+    _args: Args,
     event: PromptEvent,
 ) -> anyhow::Result<()> {
     if event != PromptEvent::Validate {
@@ -294,7 +294,7 @@ fn buffer_close_left(
 
 fn force_buffer_close_left(
     cx: &mut compositor::Context,
-    _args: &[Cow<str>],
+    _args: Args,
     event: PromptEvent,
 ) -> anyhow::Result<()> {
     if event != PromptEvent::Validate {
@@ -2729,28 +2729,44 @@ pub const TYPABLE_COMMAND_LIST: &[TypableCommand] = &[
         aliases: &["bcl", "bcloseleft"],
         doc: "Close all buffers to the left of the currently focused one.",
         fun: buffer_close_left,
-        signature: CommandSignature::none(),
+        completer: CommandCompleter::none(),
+        signature: Signature {
+            positionals: (0, Some(0)),
+            ..Signature::DEFAULT
+        },
     },
     TypableCommand {
         name: "buffer-close-left!",
         aliases: &["bcl!", "bcloseleft!"],
         doc: "Force close all buffers to the left of the currently focused one.",
         fun: force_buffer_close_left,
-        signature: CommandSignature::none(),
+        completer: CommandCompleter::none(),
+        signature: Signature {
+            positionals: (0, Some(0)),
+            ..Signature::DEFAULT
+        },
     },
     TypableCommand {
         name: "buffer-close-right",
         aliases: &["bcr", "bcloseright"],
         doc: "Close all buffers to the right of the currently focused one.",
         fun: buffer_close_right,
-        signature: CommandSignature::none(),
+        completer: CommandCompleter::none(),
+        signature: Signature {
+            positionals: (0, Some(0)),
+            ..Signature::DEFAULT
+        },
     },
     TypableCommand {
         name: "buffer-close-right!",
         aliases: &["bcr!", "bcloseright!"],
         doc: "Force close all buffers to the right of the currently focused one.",
         fun: force_buffer_close_right,
-        signature: CommandSignature::none(),
+        completer: CommandCompleter::none(),
+        signature: Signature {
+            positionals: (0, Some(0)),
+            ..Signature::DEFAULT
+        },
     },
     TypableCommand {
         name: "buffer-close-all",
