@@ -1,9 +1,9 @@
 # Diff against `helix/master`:
 
-- [924a3596](/../../commit/924a3596) Update `bcl`/`bcr` commands with new syntax
-- [b39b6163](/../../commit/b39b6163) Add '%FILENAME' magic argument for formatters
-- [30eee38d](/../../commit/30eee38d) MattCheely: Configurable labels for custom menus and typable commands
-- [b5f4e74b](/../../commit/b5f4e74b) Add `buffer-close-left`, `buffer-close-right`, and `force` versions
+- [198862b0](/../../commit/198862b0) Update `bcl`/`bcr` commands with new syntax
+- [bb906aac](/../../commit/bb906aac) Add '%FILENAME' magic argument for formatters
+- [86c02c41](/../../commit/86c02c41) MattCheely: Configurable labels for custom menus and typable commands
+- [65ac15da](/../../commit/65ac15da) Add `buffer-close-left`, `buffer-close-right`, and `force` versions
 
 
 <div align="center">
