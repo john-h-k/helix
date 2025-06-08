@@ -1,3 +1,4 @@
+- [53487885](/../../commit/53487885) Faster inlay toggles
 - [198862b0](/../../commit/198862b0) Update `bcl`/`bcr` commands with new syntax
 - [bb906aac](/../../commit/bb906aac) Add '%FILENAME' magic argument for formatters
 - [86c02c41](/../../commit/86c02c41) MattCheely: Configurable labels for custom menus and typable commands
