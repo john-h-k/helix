@@ -1521,21 +1521,23 @@ impl Document {
         };
 
         self.inlay_hints_oudated = true;
-        for text_annotation in self.inlay_hints.values_mut() {
-            let DocumentInlayHints {
-                id: _,
-                type_inlay_hints,
-                parameter_inlay_hints,
-                other_inlay_hints,
-                padding_before_inlay_hints,
-                padding_after_inlay_hints,
-            } = text_annotation;
+        if self.config.load().lsp.display_inlay_hints {
+            for text_annotation in self.inlay_hints.values_mut() {
+                let DocumentInlayHints {
+                    id: _,
+                    type_inlay_hints,
+                    parameter_inlay_hints,
+                    other_inlay_hints,
+                    padding_before_inlay_hints,
+                    padding_after_inlay_hints,
+                } = text_annotation;
 
-            apply_inlay_hint_changes(padding_before_inlay_hints);
-            apply_inlay_hint_changes(type_inlay_hints);
-            apply_inlay_hint_changes(parameter_inlay_hints);
-            apply_inlay_hint_changes(other_inlay_hints);
-            apply_inlay_hint_changes(padding_after_inlay_hints);
+                apply_inlay_hint_changes(padding_before_inlay_hints);
+                apply_inlay_hint_changes(type_inlay_hints);
+                apply_inlay_hint_changes(parameter_inlay_hints);
+                apply_inlay_hint_changes(other_inlay_hints);
+                apply_inlay_hint_changes(padding_after_inlay_hints);
+            }
         }
 
         helix_event::dispatch(DocumentDidChange {

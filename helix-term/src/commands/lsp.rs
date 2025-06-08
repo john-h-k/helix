@@ -1265,10 +1265,6 @@ pub fn select_references_to_symbol_under_cursor(cx: &mut Context) {
 }
 
 pub fn compute_inlay_hints_for_all_views(editor: &mut Editor, jobs: &mut crate::job::Jobs) {
-    if !editor.config().lsp.display_inlay_hints {
-        return;
-    }
-
     for (view, _) in editor.tree.views() {
         let doc = match editor.documents.get(&view.doc) {
             Some(doc) => doc,
@@ -1335,7 +1331,7 @@ fn compute_inlay_hints_for_view(
         language_server.text_document_range_inlay_hints(doc.identifier(), range, None)?,
         move |editor, _compositor, response: Option<Vec<lsp::InlayHint>>| {
             // The config was modified or the window was closed while the request was in flight
-            if !editor.config().lsp.display_inlay_hints || editor.tree.try_get(view_id).is_none() {
+            if editor.tree.try_get(view_id).is_none() {
                 return;
             }
 

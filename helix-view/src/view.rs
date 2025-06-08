@@ -449,15 +449,20 @@ impl View {
             text_annotations.add_overlay(labels, style);
         }
 
-        if let Some(DocumentInlayHints {
-            id: _,
-            type_inlay_hints,
-            parameter_inlay_hints,
-            other_inlay_hints,
-            padding_before_inlay_hints,
-            padding_after_inlay_hints,
-        }) = doc.inlay_hints.get(&self.id)
-        {
+        if let (
+            true,
+            Some(DocumentInlayHints {
+                id: _,
+                type_inlay_hints,
+                parameter_inlay_hints,
+                other_inlay_hints,
+                padding_before_inlay_hints,
+                padding_after_inlay_hints,
+            }),
+        ) = (
+            doc.config.load().lsp.display_inlay_hints,
+            doc.inlay_hints.get(&self.id),
+        ) {
             let type_style = theme.and_then(|t| t.find_highlight("ui.virtual.inlay-hint.type"));
             let parameter_style =
                 theme.and_then(|t| t.find_highlight("ui.virtual.inlay-hint.parameter"));
